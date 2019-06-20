@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
      exit(0);
   }
 
-  printf("INICIALIZA OS ARRAYS A SEREM MULTIPLICADOS")
+  printf("INICIALIZA OS ARRAYS A SEREM MULTIPLICADOS");
   // INICIALIZA OS ARRAYS A SEREM MULTIPLICADOS
   result = initMatrixs();
   if(result != 0) {
