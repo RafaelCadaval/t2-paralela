@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
   printMatrix(5, m2);
   printf("\n");
   printMatrix(5, mres);
-  printf("\n")
+  printf("\n");
 
   calculateMatrix(5);
   printMatrix(5, matrix);
