@@ -86,16 +86,18 @@ int verifyResult() {
   return 0;
 }
 
-// int[][] calculateMatrixs(int lines, ) {
-//     for (i=0 ; i<lines; i++) {
-//         for (j=0 ; j<SIZE; j++) {
-//             mres[i][j] = 0;
-//             for (k=0 ; k<; k++) {
-//                 mres[i][j] += m1[i][k] * m2[k][j];
-//             }
-//         }
-//     }
-// }
+int[][] calculateMatrix(int lines) {
+    int matrix[lines][SIZE];
+    for (i=0 ; i<lines; i++) {
+        for (j=0 ; j<SIZE; j++) {
+            matrix[i][j] = 0;
+            for (k=0 ; k<SIZE; k++) {
+                matrix[i][j] += m1[i][k] * m2[k][j];
+            }
+        }
+    }
+    return matrix;
+}
 
 int main(int argc, char *argv[]) {
   int    i, j, k, id, p, result;
@@ -143,7 +145,11 @@ int main(int argc, char *argv[]) {
   printf("\n");
   printMatrix(5, m2);
   printf("\n");
-  printMatrix(10, mres);
+  printMatrix(5, mres);
+  printf("\n")
+
+  int matrix[][] = calculateMatrix(5);
+  printMatrix(5, matrix);
 
   // MOSTRA O TEMPO DE EXECUCAO
   printf("%lf",elapsed_time);
