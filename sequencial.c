@@ -96,6 +96,7 @@ int main(int argc, char *argv[]) {
   // PREPARA PARA MEDIR TEMPO
   elapsed_time = - MPI_Wtime ();
 
+  printf("REALIZA A MULTIPLICACAO");
   // REALIZA A MULTIPLICACAO
   for (i=0 ; i<lres; i++) {
       for (j=0 ; j<cres; j++) {
@@ -110,6 +111,7 @@ int main(int argc, char *argv[]) {
   elapsed_time += MPI_Wtime ();
 
   // VERIFICA SE O RESULTADO DA MULTIPLICACAO ESTA CORRETO
+  printf("VERIFICA SE O RESULTADO DA MULTIPLICACAO ESTA CORRETO");
   result = verifyResult();
   if(result != 0) {
       MPI_Finalize();
