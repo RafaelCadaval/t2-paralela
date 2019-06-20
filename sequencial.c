@@ -88,6 +88,7 @@ int main(int argc, char *argv[]) {
   // INICIALIZA OS ARRAYS A SEREM MULTIPLICADOS
   result = initMatrixs();
   if(result != 0) {
+    MPI_Finalize();
     return result;
   }
 
@@ -110,6 +111,7 @@ int main(int argc, char *argv[]) {
   // VERIFICA SE O RESULTADO DA MULTIPLICACAO ESTA CORRETO
   result = verifyResult();
   if(result != 0) {
+      MPI_Finalize();
       return result;
   }
 
