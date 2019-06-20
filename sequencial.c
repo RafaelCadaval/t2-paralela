@@ -86,8 +86,7 @@ int verifyResult() {
   return 0;
 }
 
-int[][] calculateMatrix(int lines) {
-    int matrix[lines][SIZE];
+void calculateMatrix(int lines, int matrix[lines][SIZE]) {
     for (i=0 ; i<lines; i++) {
         for (j=0 ; j<SIZE; j++) {
             matrix[i][j] = 0;
@@ -96,7 +95,6 @@ int[][] calculateMatrix(int lines) {
             }
         }
     }
-    return matrix;
 }
 
 int main(int argc, char *argv[]) {
