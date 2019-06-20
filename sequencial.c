@@ -10,6 +10,18 @@
 int m1[SIZE][SIZE],m2[SIZE][SIZE],mres[SIZE][SIZE];
 int l1, c1, l2, c2, lres, cres;
 
+void printMatrix(int size, int[][] matrix) {
+    int row, columns;
+    for (int row=0; row<size; row++)
+    {
+        for(int columns=0; columns<size; columns++)
+            {
+            printf("%d     ", matrix[row][columns]);
+            }
+        printf("\n");
+    }
+}
+
 int initMatrixs() {
     int  i, j, k, id, p;
     l1 = c1 = SIZE;
@@ -86,7 +98,6 @@ int main(int argc, char *argv[]) {
      exit(0);
   }
 
-  printf("INICIALIZA OS ARRAYS A SEREM MULTIPLICADOS");
   // INICIALIZA OS ARRAYS A SEREM MULTIPLICADOS
   result = initMatrixs();
   if(result != 0) {
@@ -97,7 +108,6 @@ int main(int argc, char *argv[]) {
   // PREPARA PARA MEDIR TEMPO
   elapsed_time = - MPI_Wtime ();
 
-  printf("REALIZA A MULTIPLICACAO");
   // REALIZA A MULTIPLICACAO
   for (i=0 ; i<lres; i++) {
       for (j=0 ; j<cres; j++) {
@@ -112,7 +122,6 @@ int main(int argc, char *argv[]) {
   elapsed_time += MPI_Wtime ();
 
   // VERIFICA SE O RESULTADO DA MULTIPLICACAO ESTA CORRETO
-  printf("VERIFICA SE O RESULTADO DA MULTIPLICACAO ESTA CORRETO");
   result = verifyResult();
   if(result != 0) {
       MPI_Finalize();
