@@ -40,6 +40,7 @@ int initMatrixs() {
         }
         k++;
     }
+    return 0;
 }
 
 int verifyResult() {
