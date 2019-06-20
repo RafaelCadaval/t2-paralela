@@ -1,0 +1,60 @@
+--------------------------------------
+Running PBS prologue script
+
+Checking all prerequisites...
+Done.
+
+Running on host grad02
+
+Initial Time is Thu Jun 13 20:54:45 BRT 2019
+
+Directory is /home/pp12713/T2
+
+This jobs runs on the following nodes:
+grad02 grad03
+
+JOB_ID:
+120403
+
+------------------
+Número de processos inválido. Finalizando execução.*** The MPI_Get_processor_name() function was called after MPI_FINALIZE was invoked.
+*** This is disallowed by the MPI standard.
+*** Your MPI job will now abort.
+[grad02:30154] Abort after MPI_FINALIZE completed successfully; not able to guarantee that all other processes were killed!
+------------------
+Sou o master na máquina: [grad02]
+Simulating thread #11 | master on [g]Simulating thread #6 | master on [g]Simulating thread #0 | master on [g]Simulating thread #15 | master on [g]Simulating thread #1 | master on [g]Simulating thread #4 | master on [g]Simulating thread #12 | master on [g]Simulating thread #5 | master on [g]Simulating thread #14 | master on [g]Simulating thread #3 | master on [g]Simulating thread #7 | master on [g]Simulating thread #9 | master on [g]Simulating thread #8 | master on [g]Simulating thread #10 | master on [g]Simulating thread #13 | master on [g]Simulating thread #2 | master on [g]------------------
+Sou o master na máquina: [grad02]
+Simulating thread #6 | master on [g]Simulating thread #9 | master on [g]Simulating thread #1 | master on [g]Simulating thread #4 | master on [g]Simulating thread #10 | master on [g]Simulating thread #3 | master on [g]Simulating thread #5 | master on [g]Simulating thread #13 | master on [g]Simulating thread #2 | master on [g]Simulating thread #7 | master on [g]Simulating thread #8 | master on [g]Simulating thread #14 | master on [g]Simulating thread #0 | master on [g]Simulating thread #11 | master on [g]Simulating thread #12 | master on [g]Simulating thread #15 | master on [g]Simulating thread #3 | master on [g]Simulating thread #5 | master on [g]Simulating thread #6 | master on [g]Simulating thread #0 | master on [g]Simulating thread #13 | master on [g]Simulating thread #14 | master on [g]Simulating thread #11 | master on [g]Simulating thread #12 | master on [g]Simulating thread #7 | master on [g]Simulating thread #4 | master on [g]Simulating thread #15 | master on [g]Simulating thread #10 | master on [g]Simulating thread #1 | master on [g]Simulating thread #8 | master on [g]Simulating thread #9 | master on [g]Simulating thread #2 | master on [g]------------------
+Final Time is Thu Jun 13 20:54:46 BRT 2019
+
+--------------------------------------
+Running PBS epilogue.user script
+
+End of PBS epilogue.user script
+
+--------------------------------------
+Running PBS epilogue script
+
+Disabling access of user pp12713 on the batch nodes
+Doing node grad02
+
+ -- Killing all stale user  processes... done.
+ -- Cleaning-up any shmemory segments... done.
+Doing node grad03
+
+ -- Killing all stale user  processes... done.
+ -- Cleaning-up any shmemory segments... done.
+
+Done.
+
+Resources used:
+
+ -- CPU TIME     = 00:00:00 
+
+ -- MEMORY       = 1480kb 
+
+ -- VIRTUAL MEM  = 26184kb 
+
+ -- ELAPSED TIME = 00:00:02 
+

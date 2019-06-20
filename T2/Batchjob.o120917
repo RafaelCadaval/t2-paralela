@@ -1,0 +1,69 @@
+--------------------------------------
+Running PBS prologue script
+
+Checking all prerequisites...
+Done.
+
+Running on host grad01
+
+Initial Time is Tue Jun 18 22:28:07 BRT 2019
+
+Directory is /home/pp12713/T2
+
+This jobs runs on the following nodes:
+grad01 grad02
+
+JOB_ID:
+120917
+
+------------------
+Número de processos inválido. Finalizando execução.
+------------------
+Master running on: [grad01]
+Worker #12 running on [grad02] | master on [grad01]
+Worker #1 running on [grad02] | master on [grad01]
+------------------
+Master running on: [grad01]
+Worker #26 running on [grad01] | master on [grad01]
+Worker #27 running on [grad01] | master on [grad01]
+Worker #7 running on [grad01] | master on [grad01]
+Worker #1 running on [grad01] | master on [grad01]
+Worker #0 running on [grad01] | master on [grad01]
+Worker #1 running on [grad01] | master on [grad01]
+Worker #3 running on [grad02] | master on [grad01]
+Worker #0 running on [grad02] | master on [grad01]
+Worker #1 running on [grad02] | master on [grad01]
+Worker #12 running on [grad02] | master on [grad01]
+------------------
+Final Time is Tue Jun 18 22:28:09 BRT 2019
+
+--------------------------------------
+Running PBS epilogue.user script
+
+End of PBS epilogue.user script
+
+--------------------------------------
+Running PBS epilogue script
+
+Disabling access of user pp12713 on the batch nodes
+Doing node grad01
+
+ -- Killing all stale user  processes... done.
+ -- Cleaning-up any shmemory segments... done.
+Doing node grad02
+
+ -- Killing all stale user  processes... done.
+ -- Cleaning-up any shmemory segments... done.
+
+Done.
+
+Resources used:
+
+ -- CPU TIME     = 00:00:00 
+
+ -- MEMORY       = 1480kb 
+
+ -- VIRTUAL MEM  = 26184kb 
+
+ -- ELAPSED TIME = 00:00:02 
+

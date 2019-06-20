@@ -1,0 +1,67 @@
+#!/bin/bash
+
+################-> are comments
+################-> "#PBS" are Batch Script commands
+
+#PBS -m abe
+
+################ Verbose mode
+
+#PBS -V
+
+################
+
+################ Change these parameters according to your requisites
+
+#PBS -l nodes=3:ppn=16:cluster-Grad,walltime=06:00:00
+
+################ Where:
+################ nodes = number of nodes requested
+################ ppn = number of cores per node
+################ cluster-Atlantica / cluster-Gates = cluster name
+################ walltime = max allocation time
+
+################ Please, change this e-mail address to yours
+
+################PBS -M rafaelcadaval@icloud.com
+
+################
+
+#PBS -r n
+
+################ Output options
+
+#PBS -j oe
+
+################
+
+################ Please, change this directory to your working dir.
+
+#PBS -d /home/pp12713/T2
+
+################
+
+################
+echo Running on host `hostname`
+echo
+echo Initial Time is `date`
+echo
+echo Directory is `pwd`
+echo
+echo This jobs runs on the following nodes:
+echo `cat $PBS_NODEFILE | uniq`
+echo
+echo JOB_ID:
+echo `echo $PBS_JOBID`
+echo ################
+
+############# Command example, if using MPI
+
+echo "------------------"
+mpirun --bynode -np 4 t2_v2
+echo "------------------"
+
+################
+
+echo Final Time is `date`
+

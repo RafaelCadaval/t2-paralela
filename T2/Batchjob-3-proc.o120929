@@ -1,0 +1,84 @@
+--------------------------------------
+Running PBS prologue script
+
+Checking all prerequisites...
+Done.
+
+Running on host grad01
+
+Initial Time is Wed Jun 19 18:48:09 BRT 2019
+
+Directory is /home/pp12713/T2
+
+This jobs runs on the following nodes:
+grad01 grad02
+
+JOB_ID:
+120929
+
+------------------
+Master running on: [grad01]
+Worker #7 running on [grad01] | master on [grad01]
+Worker #1 running on [grad01] | master on [grad01]
+Worker #11 running on [grad01] | master on [grad01]
+Worker #9 running on [grad01] | master on [grad01]
+Worker #5 running on [grad01] | master on [grad01]
+Worker #13 running on [grad01] | master on [grad01]
+Worker #3 running on [grad01] | master on [grad01]
+Worker #14 running on [grad01] | master on [grad01]
+Worker #2 running on [grad01] | master on [grad01]
+Worker #0 running on [grad01] | master on [grad01]
+Worker #8 running on [grad01] | master on [grad01]
+Worker #6 running on [grad01] | master on [grad01]
+Worker #10 running on [grad01] | master on [grad01]
+Worker #4 running on [grad01] | master on [grad01]
+Worker #12 running on [grad01] | master on [grad01]
+Worker #12 running on [grad02] | master on [grad01]
+Worker #0 running on [grad02] | master on [grad01]
+Worker #13 running on [grad02] | master on [grad01]
+Worker #15 running on [grad02] | master on [grad01]
+Worker #6 running on [grad02] | master on [grad01]
+Worker #4 running on [grad02] | master on [grad01]
+Worker #9 running on [grad02] | master on [grad01]
+Worker #7 running on [grad02] | master on [grad01]
+Worker #5 running on [grad02] | master on [grad01]
+Worker #14 running on [grad02] | master on [grad01]
+Worker #11 running on [grad02] | master on [grad01]
+Worker #1 running on [grad02] | master on [grad01]
+Worker #10 running on [grad02] | master on [grad01]
+Worker #2 running on [grad02] | master on [grad01]
+Worker #8 running on [grad02] | master on [grad01]
+Worker #3 running on [grad02] | master on [grad01]
+------------------
+Final Time is Wed Jun 19 18:48:09 BRT 2019
+
+--------------------------------------
+Running PBS epilogue.user script
+
+End of PBS epilogue.user script
+
+--------------------------------------
+Running PBS epilogue script
+
+Disabling access of user pp12713 on the batch nodes
+Doing node grad01
+
+ -- Killing all stale user  processes... done.
+ -- Cleaning-up any shmemory segments... done.
+Doing node grad02
+
+ -- Killing all stale user  processes... done.
+ -- Cleaning-up any shmemory segments... done.
+
+Done.
+
+Resources used:
+
+ -- CPU TIME     = 00:00:00 
+
+ -- MEMORY       = 1480kb 
+
+ -- VIRTUAL MEM  = 26184kb 
+
+ -- ELAPSED TIME = 00:00:01 
+
