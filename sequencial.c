@@ -10,7 +10,7 @@
 int m1[SIZE][SIZE],m2[SIZE][SIZE],mres[SIZE][SIZE];
 int l1, c1, l2, c2, lres, cres;
 
-void initMatrixs() {
+int initMatrixs() {
     int  i, j, k, id, p;
     l1 = c1 = SIZE;
     l2 = c2 = SIZE;
@@ -70,11 +70,11 @@ int verifyResult() {
           }
       } 
   }
-  return 0
+  return 0;
 }
 
 int main(int argc, char *argv[]) {
-  int    i, j, k, id, p;
+  int    i, j, k, id, p, result;
   double elapsed_time;
 
   MPI_Init(&argc,&argv);
@@ -86,7 +86,10 @@ int main(int argc, char *argv[]) {
   }
 
   // INICIALIZA OS ARRAYS A SEREM MULTIPLICADOS
-  initMatrixs();
+  result = initMatrixs();
+  if(result != 0) {
+    return result;
+  }
 
   // PREPARA PARA MEDIR TEMPO
   elapsed_time = - MPI_Wtime ();
@@ -105,7 +108,7 @@ int main(int argc, char *argv[]) {
   elapsed_time += MPI_Wtime ();
 
   // VERIFICA SE O RESULTADO DA MULTIPLICACAO ESTA CORRETO
-  int result = verifyResult();
+  result = verifyResult();
   if(result != 0) {
       return result;
   }
