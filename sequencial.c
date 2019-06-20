@@ -10,7 +10,7 @@
 int m1[SIZE][SIZE],m2[SIZE][SIZE],mres[SIZE][SIZE];
 int l1, c1, l2, c2, lres, cres;
 
-void printMatrix(int size, int[][] matrix) {
+void printMatrix(int size, int matrix[][]) {
     int row, columns;
     for (int row=0; row<size; row++)
     {
@@ -127,6 +127,10 @@ int main(int argc, char *argv[]) {
       MPI_Finalize();
       return result;
   }
+
+  printMatrix(SIZE, m1);
+  printMatrix(SIZE, m2);
+  printMatrix(SIZE, mres);
 
   // MOSTRA O TEMPO DE EXECUCAO
   printf("%lf",elapsed_time);
