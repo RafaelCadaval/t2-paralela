@@ -42,7 +42,7 @@ void initMatrixs() {
     }
 }
 
-void verifyResult() {
+int verifyResult() {
     int  i, j, k, id, p;
     for (i=0 ; i<SIZE; i++) {
       k = SIZE*(i+1);
@@ -70,6 +70,7 @@ void verifyResult() {
           }
       } 
   }
+  return 0
 }
 
 int main(int argc, char *argv[]) {
@@ -85,7 +86,7 @@ int main(int argc, char *argv[]) {
   }
 
   // INICIALIZA OS ARRAYS A SEREM MULTIPLICADOS
-  initMatrixs()
+  initMatrixs();
 
   // PREPARA PARA MEDIR TEMPO
   elapsed_time = - MPI_Wtime ();
@@ -104,7 +105,10 @@ int main(int argc, char *argv[]) {
   elapsed_time += MPI_Wtime ();
 
   // VERIFICA SE O RESULTADO DA MULTIPLICACAO ESTA CORRETO
-  verifyResult()
+  int result = verifyResult();
+  if(result != 0) {
+      return result;
+  }
 
   // MOSTRA O TEMPO DE EXECUCAO
   printf("%lf",elapsed_time);
