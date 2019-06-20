@@ -102,6 +102,7 @@ int[][] calculateMatrix(int lines) {
 int main(int argc, char *argv[]) {
   int    i, j, k, id, p, result;
   double elapsed_time;
+  int matrix[5][SIZE];
 
   MPI_Init(&argc,&argv);
   MPI_Comm_size(MPI_COMM_WORLD, &p);
@@ -148,7 +149,7 @@ int main(int argc, char *argv[]) {
   printMatrix(5, mres);
   printf("\n")
 
-  int matrix[][] = calculateMatrix(5);
+  matrix = calculateMatrix(5);
   printMatrix(5, matrix);
 
   // MOSTRA O TEMPO DE EXECUCAO
