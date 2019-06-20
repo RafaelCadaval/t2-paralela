@@ -10,11 +10,11 @@
 int m1[SIZE][SIZE],m2[SIZE][SIZE],mres[SIZE][SIZE];
 int l1, c1, l2, c2, lres, cres;
 
-void printMatrix(int size, int matrix[][size]) {
+void printMatrix(int size, int matrix[size][SIZE]) {
     int row, columns;
     for (row=0; row<size; row++)
     {
-        for(columns=0; columns<size; columns++)
+        for(columns=0; columns<SIZE; columns++)
             {
             printf("%d     ", matrix[row][columns]);
             }
@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
   printf("\n");
   printMatrix(5, m2);
   printf("\n");
-  printMatrix(5, mres);
+  printMatrix(10, mres);
 
   // MOSTRA O TEMPO DE EXECUCAO
   printf("%lf",elapsed_time);
