@@ -11,6 +11,7 @@ int m1[SIZE][SIZE],m2[SIZE][SIZE],mres[SIZE][SIZE];
 int l1, c1, l2, c2, lres, cres;
 
 void initMatrixs() {
+    int  i, j, k, id, p;
     l1 = c1 = SIZE;
     l2 = c2 = SIZE;
     if (c1 != l2) {
@@ -42,6 +43,7 @@ void initMatrixs() {
 }
 
 void verifyResult() {
+    int  i, j, k, id, p;
     for (i=0 ; i<SIZE; i++) {
       k = SIZE*(i+1);
       for (j=0 ; j<SIZE; j++) {
