@@ -12,9 +12,9 @@ int l1, c1, l2, c2, lres, cres;
 
 void printMatrix(int size, int matrix[][]) {
     int row, columns;
-    for (int row=0; row<size; row++)
+    for (row=0; row<size; row++)
     {
-        for(int columns=0; columns<size; columns++)
+        for(columns=0; columns<size; columns++)
             {
             printf("%d     ", matrix[row][columns]);
             }
