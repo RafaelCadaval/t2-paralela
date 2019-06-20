@@ -87,6 +87,7 @@ int verifyResult() {
 }
 
 void calculateMatrix(int lines, int matrix[lines][SIZE]) {
+    int j, i, k;
     for (i=0 ; i<lines; i++) {
         for (j=0 ; j<SIZE; j++) {
             matrix[i][j] = 0;
@@ -147,7 +148,7 @@ int main(int argc, char *argv[]) {
   printMatrix(5, mres);
   printf("\n")
 
-  matrix = calculateMatrix(5);
+  calculateMatrix(5);
   printMatrix(5, matrix);
 
   // MOSTRA O TEMPO DE EXECUCAO
