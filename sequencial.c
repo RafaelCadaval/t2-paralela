@@ -148,7 +148,7 @@ int main(int argc, char *argv[]) {
   printMatrix(5, mres);
   printf("\n");
 
-  calculateMatrix(5);
+  calculateMatrix(5, matrix);
   printMatrix(5, matrix);
 
   // MOSTRA O TEMPO DE EXECUCAO
