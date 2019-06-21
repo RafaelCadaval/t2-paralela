@@ -58,7 +58,7 @@ echo ################
 ############# Command example, if using MPI
 
 echo "------------------"
-mpirun --bynode -np 3 t2_v2
+mpirun --bynode -np 3 ../parallel
 echo "------------------"
 
 ################
