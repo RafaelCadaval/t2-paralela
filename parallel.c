@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
         printf("**********************\n\n");
 
         // Broadcast matrix B to all workers
-        MPI_Bcast(&matrixB, SIZE*SIZE, MPI_INT, MATRIX_B_BCAST_TAG, MPI_COMM_WORLD);
+        MPI_Bcast(&matrixB, SIZE*SIZE, MPI_INT, 0, MPI_COMM_WORLD);
 
         // while(!application_finished) {
         //     // MPI_Recv(buffer, count, data_type, source, tag, comm, status)
