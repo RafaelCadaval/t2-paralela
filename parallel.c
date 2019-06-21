@@ -5,6 +5,18 @@
 #include <omp.h>
 #include <stdbool.h>
 
+void printMatrix(int size, int matrix[size][SIZE]) {
+    int row, columns;
+    for (row=0; row<size; row++)
+    {
+        for(columns=0; columns<SIZE; columns++)
+            {
+            printf("%d     ", matrix[row][columns]);
+            }
+        printf("\n");
+    }
+}
+
 main(int argc, char** argv) {
     bool MASTER;
     int my_rank;       // Identificador deste processo
@@ -27,7 +39,7 @@ main(int argc, char** argv) {
     // ...
 
     MPI_Init(&argc , &argv); // funcao que inicializa o MPI, todo o codigo paralelo esta abaixo
-    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank)
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); // pega o numero do processo atual (rank)
     MPI_Comm_size(MPI_COMM_WORLD, &proc_n);  // pega informacao do numero de processos (quantidade total)
     MPI_Get_processor_name(hostname, &hostsize);
@@ -171,16 +183,4 @@ main(int argc, char** argv) {
     // printf("Execution total time: %f seconds\n", elapsed_time);
 
     MPI_Finalize();
-}
-
-void printMatrix(int size, int matrix[size][SIZE]) {
-    int row, columns;
-    for (row=0; row<size; row++)
-    {
-        for(columns=0; columns<SIZE; columns++)
-            {
-            printf("%d     ", matrix[row][columns]);
-            }
-        printf("\n");
-    }
 }
