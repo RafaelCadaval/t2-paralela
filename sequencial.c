@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
   printf("\n");
 
   int copyM1[5][SIZE];
-  copyMatrix(0, 5, copyM1, matrix);
+  copyMatrix(0, 5, matrix, copyM1);
   printMatrix(5, copyM1);
 
   // MOSTRA O TEMPO DE EXECUCAO
