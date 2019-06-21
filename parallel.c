@@ -152,6 +152,8 @@ int main(int argc, char** argv) {
         }
         omp_set_num_threads(num_threads);
         
+        printf("\nNumber of threads: %d\n", omp_get_num_threads());
+        
         int matrixBAux[SIZE][SIZE];
         MPI_Bcast(&matrixBAux, SIZE*SIZE, MPI_INT, MATRIX_B_BCAST_TAG, MPI_COMM_WORLD);
 
