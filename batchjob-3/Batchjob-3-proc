@@ -37,7 +37,7 @@
 
 ################ Please, change this directory to your working dir.
 
-#PBS -d /home/pp12713/T2
+#PBS -d /home/pp12713/t2-paralela/batchjob-3
 
 ################
 
