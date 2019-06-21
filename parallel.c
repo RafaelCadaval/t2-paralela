@@ -151,15 +151,19 @@ int main(int argc, char** argv) {
             --num_threads;
         }
         omp_set_num_threads(num_threads);
-        
-        printf("\nNumber of threads: %d\n", omp_get_num_threads());
+
+        printf("\nNumber of threads: %d\n", num_threads);
         
         int matrixBAux[SIZE][SIZE];
         MPI_Bcast(&matrixBAux, SIZE*SIZE, MPI_INT, MATRIX_B_BCAST_TAG, MPI_COMM_WORLD);
 
+        printf("** Bcast matrix before pFor **\n", i);
+        printMatrix(SIZE, matrixBAux);
+        printf("**********************\n", i);
+
         int i;
         #pragma omp parallel for
-        for(i=0;i<omp_get_num_threads();i++) {
+        for(i=0;i<num_threads;i++) {
             printf("** Worker %d matrix **\n", i);
             printMatrix(SIZE, matrixBAux);
             printf("**********************\n", i);
