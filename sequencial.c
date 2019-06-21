@@ -150,15 +150,15 @@ int main(int argc, char *argv[]) {
       return result;
   }
 
-  printMatrix(5, m1);
+  printMatrix(SIZE, m1);
   printf("\n");
-  printMatrix(5, m2);
+  printMatrix(SIZE, m2);
   printf("\n");
-  printMatrix(5, mres);
+  printMatrix(SIZE, mres);
   printf("\n");
 
   int copyM1[5][SIZE];
-  copyMatrix(0, 5, m1, copyM1);
+  copyMatrix(5, 10, m1, copyM1);
   printMatrix(5, copyM1);
 
   // MOSTRA O TEMPO DE EXECUCAO
