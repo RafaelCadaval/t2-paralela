@@ -89,7 +89,7 @@ int verifyResult() {
 void copyMatrix(int start, int lines, int m1[SIZE][SIZE], int matrix[lines][SIZE]) {
     int i, j;
     for(i = 0; i < lines; i++) {
-        matrix[i] = m1[i + start];
+        memcpy(matrix[i], m1[i + start],sizeof(matrix[i]));
     }
 }
 
