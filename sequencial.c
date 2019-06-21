@@ -90,7 +90,7 @@ void copyMatrix(int start, int lines, int m1[SIZE][SIZE], int matrix[lines][SIZE
     int i, j;
     for(i = start; i < lines; i++) {
         for(j = 0; j < SIZE; j++) {
-            m1[i][j] = matrix[i][j];
+            matrix[i][j] = m1[i][j];
         }
     }
 }
@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
   printf("\n");
 
   int copyM1[5][SIZE];
-  copyMatrix(0, 5, matrix, copyM1);
+  copyMatrix(0, 5, m1, copyM1);
   printMatrix(5, copyM1);
 
   // MOSTRA O TEMPO DE EXECUCAO
