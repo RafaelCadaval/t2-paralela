@@ -146,13 +146,16 @@ int main(int argc, char** argv) {
         //  - num_threads = number of the node's processors, if the master isn't running on the same node;
         //      OR
         //  - num_threads = number of the node's processors - 1, if the master is running on the same node.
+        printf("** Bcast m_hn **\n");
+        printf("%s\n", master_hostname);
+
         int num_threads = omp_get_num_procs();
         if(strcmp(hostname, master_hostname)==0) {
             --num_threads;
         }
         omp_set_num_threads(num_threads);
 
-        printf("\nNumber of threads: %d\n", num_threads);
+        // printf("\nNumber of threads: %d\n", num_threads);
         
         int matrixBAux[SIZE][SIZE];
         MPI_Bcast(&matrixBAux, SIZE*SIZE, MPI_INT, MATRIX_B_BCAST_TAG, MPI_COMM_WORLD);
@@ -165,8 +168,8 @@ int main(int argc, char** argv) {
         #pragma omp parallel for
         for(i=0;i<num_threads;i++) {
             printf("** Worker %d matrix **\n", i);
-            printMatrix(SIZE, matrixBAux);
-            printf("**********************\n", i);
+            // printMatrix(SIZE, matrixBAux);
+            // printf("**********************\n", i);
         }
 
         // MPI_Recv();
