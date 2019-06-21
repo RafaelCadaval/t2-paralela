@@ -17,7 +17,7 @@ void printMatrix(int size, int matrix[size][SIZE]) {
     }
 }
 
-main(int argc, char** argv) {
+int main(int argc, char** argv) {
     bool MASTER;
     int my_rank;       // Identificador deste processo
     const int MASTER_RANK = 0;
@@ -187,4 +187,5 @@ main(int argc, char** argv) {
     // printf("Execution total time: %f seconds\n", elapsed_time);
 
     MPI_Finalize();
+    return 0;
 }
