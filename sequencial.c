@@ -89,7 +89,9 @@ int verifyResult() {
 void copyMatrix(int start, int lines, int m1[SIZE][SIZE], int matrix[lines][SIZE]) {
     int i, j;
     for(i = 0; i < lines; i++) {
-        memcpy(matrix[i], m1[i + start],sizeof(matrix[i]));
+        for(j = 0; j < SIZE; j++) {
+            matrix[i] = m1[i + start][j];
+        }
     }
 }
 
@@ -156,12 +158,12 @@ int main(int argc, char *argv[]) {
   printf("\n");
 
   int copyM1[5][SIZE];
-  copyMatrix(0, 5, m1, copyM1);
+  copyMatrix(5, 5, m1, copyM1);
   printMatrix(5, copyM1);
 
   printf("\n");
   printMatrix(SIZE, m1);
-  printf("\n");
+    
 
   // MOSTRA O TEMPO DE EXECUCAO
   printf("%lf",elapsed_time);
