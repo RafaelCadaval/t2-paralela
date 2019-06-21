@@ -155,13 +155,17 @@ main(int argc, char** argv) {
         int matrixBAux[SIZE][SIZE];
         MPI_Bcast(&matrixBAux, SIZE*SIZE, MPI_INT, MATRIX_B_BCAST_TAG, MPI_COMM_WORLD);
 
-        int i;
-        #pragma omp parallel for
-        for(i=0;i<omp_get_num_threads();i++) {
-            printf("** Worker %d matrix **\n", i);
-            printMatrix(SIZE, matrixBAux);
-            printf("**********************\n", i);
-        }
+        // int i;
+        // #pragma omp parallel for
+        // for(i=0;i<omp_get_num_threads();i++) {
+        //     printf("** Worker %d matrix **\n", i);
+        //     printMatrix(SIZE, matrixBAux);
+        //     printf("**********************\n", i);
+        // }
+
+        printf("** Worker %d matrix **\n", my_rank);
+        printMatrix(SIZE, matrixBAux);
+        printf("**********************\n");
 
         // MPI_Recv();
 
