@@ -90,7 +90,7 @@ void copyMatrix(int start, int lines, int m1[SIZE][SIZE], int matrix[lines][SIZE
     int i, j;
     for(i = 0; i < lines; i++) {
         for(j = 0; j < SIZE; j++) {
-            matrix[i] = m1[i + start][j];
+            matrix[i][j] = m1[i + start][j];
         }
     }
 }
