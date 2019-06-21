@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
         // printf("\nNumber of threads: %d\n", num_threads);
         
         int matrixBAux[SIZE][SIZE];
-        MPI_Bcast(&matrixBAux, SIZE*SIZE, MPI_INT, MATRIX_B_BCAST_TAG, MPI_COMM_WORLD);
+        MPI_Bcast(&matrixBAux, SIZE*SIZE, MPI_INT, 0, MPI_COMM_WORLD);
 
         printf("** Bcast matrix before pFor **\n");
         printMatrix(SIZE, matrixBAux);
