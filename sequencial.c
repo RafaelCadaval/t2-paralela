@@ -89,7 +89,7 @@ int verifyResult() {
 void copyMatrix(int start, int end, int lines, int m1[SIZE][SIZE], int matrix[lines][SIZE]) {
     int i, j;
     for(i = start; i < end; i++) {
-        printf("%i", i);
+        printf("index %i \n", i);
         for(j = 0; j < SIZE; j++) {
             matrix[i][j] = m1[i][j];
         }
