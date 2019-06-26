@@ -291,7 +291,7 @@ int main(int argc, char** argv) {
                 int test_lines_buffer[1][SIZE];
                 copyMatrix(status.MPI_SOURCE, 1, matrixA, test_lines_buffer);
                 // MPI_Send(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
-                MPI_Send(&test_lines_buffer, MAX_NUMBER_OF_LINES, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+                MPI_Send(&test_lines_buffer, SIZE*SIZE, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
             } else if(status.MPI_TAG == STOP_WORKER_TAG) {
                 MPI_Recv(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 workers_finished++;
@@ -342,9 +342,9 @@ int main(int argc, char** argv) {
         int i;
         #pragma omp parallel for private(lines)
         for(i=0; i<MAX_NUMBER_OF_LINES; i++) { 
-            printf("** Worker %d requesting lines **\n", i);
+            printf("** Worker %d requesting lines **\n", i+1);
             MPI_Send(&i, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
-            MPI_Recv(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&lines, SIZE*SIZE, MPI_INT, MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             printf("** Lines given to Worker %d\n", i);
             printMatrix(1, lines);
             MPI_Send(&i, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, STOP_WORKER_TAG, MPI_COMM_WORLD);
