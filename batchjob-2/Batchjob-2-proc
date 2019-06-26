@@ -58,7 +58,7 @@ echo ################
 ############# Command example, if using MPI
 
 echo "------------------"
-mpicc ../parallel.c -o ../parallel -DSIZE=5 -std=c99 -fopenmp
+mpicc ../parallel.c -o ../parallel -DSIZE=18 -std=c99 -fopenmp
 mpirun --bynode -np 2 ../parallel
 echo "------------------"
 
