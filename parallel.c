@@ -154,6 +154,7 @@ int main(int argc, char** argv) {
     int my_rank; // Process ID
     const int MASTER_RANK = 0;
     // int num_proc; // Number of process given by the user through the `np` clause
+    int num_threads;
     int hostsize;
     char hostname[MPI_MAX_PROCESSOR_NAME];
     char master_hostname[MPI_MAX_PROCESSOR_NAME];    
@@ -279,21 +280,21 @@ int main(int argc, char** argv) {
 
 
             // Extract status' tag
-            int tag = status.MPI_TAG;
+            // int tag = status.MPI_TAG;
             int source = status.MPI_SOURCE;
             int throwaway_buffer = 0;
-            switch(tag) {
+            switch(status.MPI_TAG) {
             case NEED_LINES_TO_PROCESS_TAG:
                 // MPI_Recv(buffer, count, data_type, source, tag, comm, status)
-                MPI_Recv(throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 // TEST CODE
                 int test_lines_buffer[1][SIZE];
                 copyMatrix(status.MPI_SOURCE, 1, matrixA, test_lines_buffer);
                 // MPI_Send(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
-                MPI_Send(&test_lines_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+                MPI_Send(&test_lines_buffer, MAX_NUMBER_OF_LINES, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
                 break;
             case STOP_WORKER_TAG:
-                MPI_Recv(throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 workers_finished++;
                 if(workers_finished == num_proc-1)
                     application_finished = true;
@@ -316,11 +317,11 @@ int main(int argc, char** argv) {
         #pragma omp parallel for private(lines)
         for(i=0; i<MAX_NUMBER_OF_LINES; i++) { 
             printf("** Worker %d requesting lines **\n", i);
-            MPI_Send(i, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+            MPI_Send(&i, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
             MPI_Recv(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             printf("** Lines given to Worker %d\n", i);
             printMatrix(1, lines);
-            MPI_Send(i, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, STOP_WORKER_TAG, MPI_COMM_WORLD);
+            MPI_Send(&i, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, STOP_WORKER_TAG, MPI_COMM_WORLD);
         }
     }
 
