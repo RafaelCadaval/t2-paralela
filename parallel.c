@@ -17,6 +17,7 @@ bool application_finished = false;
 const int MASTER_HOSTNAME_TAG = 0;
 const int NEED_LINES_TO_PROCESS_TAG = 2;
 const int SENDING_LINES_TO_PROCESS_TAG = 3;
+const int NUMBER_OF_ROWS_TAG = 4;
 const int STOP_WORKER_TAG = 10;
 // ...
 
@@ -263,8 +264,6 @@ int main(int argc, char** argv) {
     // ******************************************* MAIN EXECUTION *******************************************
     // ******************************************************************************************************
 
-    // int lines[MAX_NUMBER_OF_LINES];
-    int lines[1][SIZE];
     if(IS_MASTER) {
         // *** Master process ***
         
@@ -272,26 +271,49 @@ int main(int argc, char** argv) {
         MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         int buffer_count;
         MPI_Get_count(&status, MPI_INT, &buffer_count);
-        int throwaway_buffer = 0;
-
-        printf("--> 1º Buffer count: %d\n", buffer_count);
-
         if(status.MPI_TAG == NEED_LINES_TO_PROCESS_TAG) {
-            // MPI_Recv(buffer, count, data_type, source, tag, comm, status)
-            MPI_Recv(&throwaway_buffer, buffer_count, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            // TEST CODE
-            int test_lines_buffer[1][SIZE];
-            copyMatrix(status.MPI_SOURCE, 1, matrixA, test_lines_buffer);
-            // MPI_Send(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
-            MPI_Send(&test_lines_buffer, SIZE*SIZE, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
-        } else if(status.MPI_TAG == STOP_WORKER_TAG) {
-            MPI_Recv(&throwaway_buffer, buffer_count, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            workers_finished++;
-            if(workers_finished == MAX_NUMBER_OF_LINES)
-                application_finished = true;
-        } else {
-            printf("--> Couldn't parse request..\n");
+            int num_rows;
+            MPI_Recv(&num_rows, buffer_count, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            printf("** Master received request.. **\n");
+            int test_matrix[num_rows][SIZE];
+            copyMatrix(status.MPI_SOURCE, num_rows, matrixA, test_matrix);
+            printf("** Master sending matrix portion to Worker %d.. **\n", status.MPI_SOURCE);
+            MPI_Send(&num_rows, num_rows, MPI_INT, status.MPI_SOURCE, NUMBER_OF_ROWS_TAG, MPI_COMM_WORLD);
+            MPI_Send(&test_matrix, sizeof test_matrix, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
         }
+
+
+
+
+
+
+
+        /* GOING TO REFACTOR ALL THIS CODE (relax) */
+
+        // MPI_Status status;
+        // MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+        // int buffer_count;
+        // MPI_Get_count(&status, MPI_INT, &buffer_count);
+        // int throwaway_buffer = 0;
+
+        // printf("--> 1º Buffer count: %d\n", buffer_count);
+
+        // if(status.MPI_TAG == NEED_LINES_TO_PROCESS_TAG) {
+        //     // MPI_Recv(buffer, count, data_type, source, tag, comm, status)
+        //     MPI_Recv(&throwaway_buffer, buffer_count, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        //     // TEST CODE
+        //     int test_lines_buffer[1][SIZE];
+        //     copyMatrix(status.MPI_SOURCE, 1, matrixA, test_lines_buffer);
+        //     // MPI_Send(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+        //     MPI_Send(&test_lines_buffer, SIZE*SIZE, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+        // } else if(status.MPI_TAG == STOP_WORKER_TAG) {
+        //     MPI_Recv(&throwaway_buffer, buffer_count, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        //     workers_finished++;
+        //     if(workers_finished == MAX_NUMBER_OF_LINES)
+        //         application_finished = true;
+        // } else {
+        //     printf("--> Couldn't parse request..\n");
+        // }
 
 
 
@@ -341,22 +363,48 @@ int main(int argc, char** argv) {
         // MPI_Send(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
         // MPI_Recv(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, status);
 
-        MPI_Status status;
         printf("** Worker %d requesting lines **\n", my_rank);
-        int throwaway_buffer = 0;
-
-        printf("--> 2º Buffer count: %d\n", MAX_NUMBER_OF_LINES);
-        MPI_Send(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
-
-        
-        MPI_Probe(MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, &status);
+        MPI_Send(&MAX_NUMBER_OF_LINES, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+        MPI_Status status;
+        MPI_Probe(MASTER_RANK, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         int buffer_count;
         MPI_Get_count(&status, MPI_INT, &buffer_count);
-        printf("--> 3º Buffer count: %d\n", buffer_count);
-        MPI_Recv(&lines, buffer_count, MPI_INT, MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        if(status.MPI_TAG == NUMBER_OF_ROWS_TAG) {
+            int num_rows;
+            MPI_Recv(&num_rows, buffer_count, MPI_INT, MASTER_RANK, NUMBER_OF_ROWS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Probe(MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, &status);
+            MPI_Get_count(&status, MPI_INT, &buffer_count);
+            int recv_matrix[num_rows][SIZE];
+            MPI_Recv(&recv_matrix, buffer_count, MPI_INT, MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            printf("** Worker %d received rows **\n", my_rank);
+            printMatrix(num_rows, recv_matrix);
+        }
 
-        printf("** Lines given to Worker %d:\n", my_rank);
-        printMatrix(1, lines);
+
+
+
+
+
+
+
+        /* REFACTORING ALL THIS */
+
+        // MPI_Status status;
+        // printf("** Worker %d requesting lines **\n", my_rank);
+        // int throwaway_buffer = 0;
+
+        // printf("--> 2º Buffer count: %d\n", MAX_NUMBER_OF_LINES);
+        // MPI_Send(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+
+        
+        // MPI_Probe(MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, &status);
+        // int buffer_count;
+        // MPI_Get_count(&status, MPI_INT, &buffer_count);
+        // printf("--> 3º Buffer count: %d\n", buffer_count);
+        // MPI_Recv(&lines, buffer_count, MPI_INT, MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+        // printf("** Lines given to Worker %d:\n", my_rank);
+        // printMatrix(1, lines);
         // MPI_Send(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, STOP_WORKER_TAG, MPI_COMM_WORLD);
 
 
