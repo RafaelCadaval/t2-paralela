@@ -12,6 +12,19 @@ int num_proc;
 int workers_finished = 0;
 bool application_finished = false;
 
+// ************* TAGS *************
+// Possible tags for the master to process
+const int MASTER_HOSTNAME_TAG = 0;
+const int NEED_LINES_TO_PROCESS_TAG = 2;
+const int SENDING_LINES_TO_PROCESS_TAG = 3;
+const int STOP_WORKER_TAG = 10;
+// ...
+
+
+
+
+
+
 void printMatrix(int size, int matrix[size][SIZE]) {
     int row, columns;
     for (row=0; row<size; row++) {
@@ -108,32 +121,32 @@ int verifyResult() {
     return 0;
 }
 
-void processStatus(MPI_Status status) {
-    // Extract status' tag
-    int tag = status.MPI_TAG;
-    int source = status.MPI_SOURCE;
-    int throwaway_buffer;
-    switch(tag) {
-    case NEED_LINES_TO_PROCESS_TAG:
-        // MPI_Recv(buffer, count, data_type, source, tag, comm, status)
-        MPI_Recv(throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        // TEST CODE
-        int test_lines_buffer[1][SIZE];
-        copyMatrix(status.MPI_SOURCE, 1, matrixA, &test_lines_buffer);
-        // MPI_Send(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
-        MPI_Send(&test_lines_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
-        break;
-    case STOP_WORKER_TAG:
-        MPI_Recv(throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        workers_finished++;
-        if(workers_finished == num_proc-1)
-            application_finished = true;
-        break;
-    default: 
-        printf("--> Couldn't parse request..\n");
-        break;
-    }
-}
+// void processStatus(MPI_Status status) {
+//     // Extract status' tag
+//     int tag = status.MPI_TAG;
+//     int source = status.MPI_SOURCE;
+//     int throwaway_buffer;
+//     switch(tag) {
+//     case NEED_LINES_TO_PROCESS_TAG:
+//         // MPI_Recv(buffer, count, data_type, source, tag, comm, status)
+//         MPI_Recv(throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+//         // TEST CODE
+//         int test_lines_buffer[1][SIZE];
+//         copyMatrix(status.MPI_SOURCE, 1, matrixA, &test_lines_buffer);
+//         // MPI_Send(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+//         MPI_Send(&test_lines_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+//         break;
+//     case STOP_WORKER_TAG:
+//         MPI_Recv(throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+//         workers_finished++;
+//         if(workers_finished == num_proc-1)
+//             application_finished = true;
+//         break;
+//     default: 
+//         printf("--> Couldn't parse request..\n");
+//         break;
+//     }
+// }
 
 int main(int argc, char** argv) {
     // *** VARIABLES ***
@@ -148,15 +161,6 @@ int main(int argc, char** argv) {
     int MAX_NUMBER_OF_LINES;
 
     MPI_Status status; // Additional information about the `receive` operation after it completes
-    MPI_Request request;
-
-    // ************* TAGS *************
-    // Possible tags for the master to process
-    const int MASTER_HOSTNAME_TAG = 0;
-    const int NEED_LINES_TO_PROCESS_TAG = 2;
-    const int SENDING_LINES_TO_PROCESS_TAG = 3;
-    const int STOP_WORKER_TAG = 10;
-    // ...
 
     MPI_Init(&argc , &argv); // Initializes MPI; all parallel code is below this statement
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); // Default communicator for all process
@@ -271,14 +275,37 @@ int main(int argc, char** argv) {
 
             MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
             // processStatus(status, &lines);
-            processStatus(status);
+            // processStatus(status);
 
-            // MPI_Recv(lines, MAX_NUMBER_OF_LINES, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, status);
+
+            // Extract status' tag
+            int tag = status.MPI_TAG;
+            int source = status.MPI_SOURCE;
+            int throwaway_buffer = 0;
+            switch(tag) {
+            case NEED_LINES_TO_PROCESS_TAG:
+                // MPI_Recv(buffer, count, data_type, source, tag, comm, status)
+                MPI_Recv(throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                // TEST CODE
+                int test_lines_buffer[1][SIZE];
+                copyMatrix(status.MPI_SOURCE, 1, matrixA, test_lines_buffer);
+                // MPI_Send(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+                MPI_Send(&test_lines_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+                break;
+            case STOP_WORKER_TAG:
+                MPI_Recv(throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, source, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                workers_finished++;
+                if(workers_finished == num_proc-1)
+                    application_finished = true;
+                break;
+            default: 
+                printf("--> Couldn't parse request..\n");
+                break;
+            }
+
+
 
         }
-        // int num_lines;
-        // MPI_Recv(, num_lines, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, status);
-
     } else {
         // *** Worker process ***
 
@@ -289,11 +316,11 @@ int main(int argc, char** argv) {
         #pragma omp parallel for private(lines)
         for(i=0; i<MAX_NUMBER_OF_LINES; i++) { 
             printf("** Worker %d requesting lines **\n", i);
-            MPI_Send(0, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+            MPI_Send(i, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
             MPI_Recv(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             printf("** Lines given to Worker %d\n", i);
             printMatrix(1, lines);
-            MPI_Send(0, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, STOP_WORKER_TAG, MPI_COMM_WORLD);
+            MPI_Send(i, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, STOP_WORKER_TAG, MPI_COMM_WORLD);
         }
     }
 
