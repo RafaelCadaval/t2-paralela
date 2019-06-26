@@ -164,7 +164,6 @@ int main(int argc, char** argv) {
     // MPI_Status status; // Additional information about the `receive` operation after it completes
 
     MPI_Init(&argc , &argv); // Initializes MPI; all parallel code is below this statement
-    // MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); // Default communicator for all process
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); // Gets the current process number (rank)
     MPI_Comm_size(MPI_COMM_WORLD, &num_proc);  // Gets information about the number of process (total number)
     MPI_Get_processor_name(hostname, &hostsize); // Gets the node's name where the current process is running
@@ -275,6 +274,8 @@ int main(int argc, char** argv) {
         MPI_Get_count(&status, MPI_INT, &buffer_count);
         int throwaway_buffer = 0;
 
+        printf("--> 1º Buffer count: %d\n", buffer_count);
+
         if(status.MPI_TAG == NEED_LINES_TO_PROCESS_TAG) {
             // MPI_Recv(buffer, count, data_type, source, tag, comm, status)
             MPI_Recv(&throwaway_buffer, buffer_count, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -344,11 +345,14 @@ int main(int argc, char** argv) {
         printf("** Worker %d requesting lines **\n", my_rank);
         int throwaway_buffer = 0;
 
+        printf("--> 2º Buffer count: %d\n", MAX_NUMBER_OF_LINES);
         MPI_Send(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+
         
         MPI_Probe(MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, &status);
         int buffer_count;
         MPI_Get_count(&status, MPI_INT, &buffer_count);
+        printf("--> 3º Buffer count: %d\n", buffer_count);
         MPI_Recv(&lines, buffer_count, MPI_INT, MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
         printf("** Lines given to Worker %d:\n", my_rank);
