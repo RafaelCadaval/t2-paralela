@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
     // MPI_Status status; // Additional information about the `receive` operation after it completes
 
     MPI_Init(&argc , &argv); // Initializes MPI; all parallel code is below this statement
-    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); // Default communicator for all process
+    // MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); // Default communicator for all process
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); // Gets the current process number (rank)
     MPI_Comm_size(MPI_COMM_WORLD, &num_proc);  // Gets information about the number of process (total number)
     MPI_Get_processor_name(hostname, &hostsize); // Gets the node's name where the current process is running
