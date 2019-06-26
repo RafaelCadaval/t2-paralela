@@ -161,7 +161,7 @@ int main(int argc, char** argv) {
     double setup_elapsed_time, execution_elapsed_time;
     int MAX_NUMBER_OF_LINES;
 
-    MPI_Status status; // Additional information about the `receive` operation after it completes
+    // MPI_Status status; // Additional information about the `receive` operation after it completes
 
     MPI_Init(&argc , &argv); // Initializes MPI; all parallel code is below this statement
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); // Default communicator for all process
@@ -273,6 +273,7 @@ int main(int argc, char** argv) {
             // MPI_Recv(buffer, count, data_type, source, tag, comm, status)
             // MPI_Send(buffer, count, data_type, dest, tag, comm)
             // MPI_Probe(source, tag, comm, status);
+            MPI_Status status;
 
             MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
             int buffer_count;
@@ -293,7 +294,7 @@ int main(int argc, char** argv) {
                 int test_lines_buffer[1][SIZE];
                 copyMatrix(status.MPI_SOURCE, 1, matrixA, test_lines_buffer);
                 // MPI_Send(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
-                MPI_Send(&test_lines_buffer, SIZE*SIZE, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+                MPI_Send(test_lines_buffer, SIZE*SIZE, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
             } else if(status.MPI_TAG == STOP_WORKER_TAG) {
                 MPI_Recv(&throwaway_buffer, buffer_count, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 workers_finished++;
@@ -342,12 +343,14 @@ int main(int argc, char** argv) {
         // MPI_Recv(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, status);
 
         int i;
-        #pragma omp parallel for private(lines)
+        #pragma omp parallel for private(lines, status)
         for(i=0; i<MAX_NUMBER_OF_LINES; i++) { 
             printf("** Worker %d requesting lines **\n", i+1);
             int throwaway_buffer = 0;
 
-            MPI_Send(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+            MPI_Status status;
+
+            MPI_Send(throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
             
             MPI_Probe(MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, &status);
             int buffer_count;
