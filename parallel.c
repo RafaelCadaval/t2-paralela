@@ -343,14 +343,13 @@ int main(int argc, char** argv) {
         // MPI_Recv(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, status);
 
         int i;
+        MPI_Status status;
         #pragma omp parallel for private(lines, status)
         for(i=0; i<MAX_NUMBER_OF_LINES; i++) { 
             printf("** Worker %d requesting lines **\n", i+1);
             int throwaway_buffer = 0;
 
-            MPI_Status status;
-
-            MPI_Send(throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+            MPI_Send(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
             
             MPI_Probe(MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, &status);
             int buffer_count;
