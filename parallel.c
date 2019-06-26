@@ -283,8 +283,8 @@ int main(int argc, char** argv) {
             // int tag = status.MPI_TAG;
             int source = status.MPI_SOURCE;
             int throwaway_buffer = 0;
-            switch(status.MPI_TAG) {
-            case NEED_LINES_TO_PROCESS_TAG:
+
+            if(status.MPI_TAG == NEED_LINES_TO_PROCESS_TAG) {
                 // MPI_Recv(buffer, count, data_type, source, tag, comm, status)
                 MPI_Recv(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 // TEST CODE
@@ -292,17 +292,43 @@ int main(int argc, char** argv) {
                 copyMatrix(status.MPI_SOURCE, 1, matrixA, test_lines_buffer);
                 // MPI_Send(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
                 MPI_Send(&test_lines_buffer, MAX_NUMBER_OF_LINES, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
-                break;
-            case STOP_WORKER_TAG:
+            } else if(status.MPI_TAG == STOP_WORKER_TAG) {
                 MPI_Recv(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 workers_finished++;
                 if(workers_finished == num_proc-1)
                     application_finished = true;
-                break;
-            default: 
+            } else {
                 printf("--> Couldn't parse request..\n");
-                break;
             }
+
+
+
+
+
+
+
+            /* OLD (DELETE AFTER TESTING THE CODE ABOVE) */
+
+            // switch(status.MPI_TAG) {
+            // case NEED_LINES_TO_PROCESS_TAG:
+            //     // MPI_Recv(buffer, count, data_type, source, tag, comm, status)
+            //     MPI_Recv(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            //     // TEST CODE
+            //     int test_lines_buffer[1][SIZE];
+            //     copyMatrix(status.MPI_SOURCE, 1, matrixA, test_lines_buffer);
+            //     // MPI_Send(&lines, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+            //     MPI_Send(&test_lines_buffer, MAX_NUMBER_OF_LINES, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+            //     break;
+            // case STOP_WORKER_TAG:
+            //     MPI_Recv(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            //     workers_finished++;
+            //     if(workers_finished == num_proc-1)
+            //         application_finished = true;
+            //     break;
+            // default: 
+            //     printf("--> Couldn't parse request..\n");
+            //     break;
+            // }
 
 
 
