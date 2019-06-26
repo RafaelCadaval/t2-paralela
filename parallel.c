@@ -351,7 +351,7 @@ int main(int argc, char** argv) {
         MPI_Get_count(&status, MPI_INT, &buffer_count);
         MPI_Recv(&lines, buffer_count, MPI_INT, MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-        printf("** Lines given to Worker %d\n", i);
+        printf("** Lines given to Worker %d:\n", my_rank);
         printMatrix(1, lines);
         // MPI_Send(&throwaway_buffer, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, STOP_WORKER_TAG, MPI_COMM_WORLD);
 
