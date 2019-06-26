@@ -372,6 +372,7 @@ int main(int argc, char** argv) {
         MPI_Get_count(&status, MPI_INT, &buffer_count);
         if(status.MPI_TAG == NUMBER_OF_ROWS_TAG) {
             int num_rows;
+            printf("** MASTER_RANK: %d **\n", MASTER_RANK);
             MPI_Recv(&num_rows, buffer_count, MPI_INT, MASTER_RANK, NUMBER_OF_ROWS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             printf("** num_rows %d received**\n", num_rows);
             printf("** MASTER_RANK: %d **\n", MASTER_RANK);
