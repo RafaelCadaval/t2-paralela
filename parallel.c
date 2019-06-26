@@ -374,7 +374,8 @@ int main(int argc, char** argv) {
             int num_rows;
             MPI_Recv(&num_rows, buffer_count, MPI_INT, MASTER_RANK, NUMBER_OF_ROWS_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             printf("** num_rows %d received**\n", num_rows);
-            MPI_Probe(MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, status);
+            printf("** MASTER_RANK: %d **\n", MASTER_RANK);
+            MPI_Probe(MASTER_RANK, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, &status);
             printf("** hello? **\n");
             MPI_Get_count(&status, MPI_INT, &buffer_count);
             int recv_matrix[num_rows][SIZE];
