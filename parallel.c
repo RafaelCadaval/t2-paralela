@@ -367,7 +367,7 @@ int main(int argc, char** argv) {
         MPI_Send(&MAX_NUMBER_OF_LINES, MAX_NUMBER_OF_LINES, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
         MPI_Status status;
         MPI_Probe(MASTER_RANK, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-        printf("** hello **\n");
+        printf("** hello rank %d**\n", status.MPI_SOURCE);
         int buffer_count;
         MPI_Get_count(&status, MPI_INT, &buffer_count);
         if(status.MPI_TAG == NUMBER_OF_ROWS_TAG) {
