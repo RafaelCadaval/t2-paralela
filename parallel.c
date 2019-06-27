@@ -249,9 +249,9 @@ int main(int argc, char** argv) {
     if(IS_MASTER) {
         // Stops setup timer
         setup_elapsed_time += MPI_Wtime();
-        printf("\n\n*************************************\n");
+        // printf("\n\n*************************************\n");
         printf("Setup total time: %f seconds\n", setup_elapsed_time);
-        printf("*************************************\n\n");
+        // printf("*************************************\n\n");
         // Starts execution timer
         execution_elapsed_time = - MPI_Wtime();
     }
@@ -322,18 +322,14 @@ int main(int argc, char** argv) {
         // Stops execution timer
 
         execution_elapsed_time += MPI_Wtime();
-        printf("\n\n*************************************\n");
+        // printf("\n\n*************************************\n");
         printf("Execution total time: %f seconds\n", execution_elapsed_time);
-        printf("*************************************\n\n");
+        // printf("*************************************\n\n");
 
         MPI_Finalize();
     } else {
         int has_rows_left = 1;
         while(has_rows_left) {
-            printf("** Worker %d requesting lines **\n", my_rank);
-            printf("Rank: %d | Hostname: %s | Rows left: %d\n", my_rank, hostname, has_rows_left);
-
-            // printf("nmber of lines %d\n", MAX_NUMBER_OF_LINES);
             MPI_Send(&MAX_NUMBER_OF_LINES, 1, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
 
             int offset;
@@ -355,11 +351,11 @@ int main(int argc, char** argv) {
 
             MPI_Send(&res, num_rows * SIZE, MPI_INT, MASTER_RANK, MATRIX_MULTIPLICATION_RESULT_TAG, MPI_COMM_WORLD);
             MPI_Recv(&has_rows_left, 1, MPI_INT, MASTER_RANK, HAS_ROWS_LEFT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            printf("Rank: %d | Hostname: %s | Rows left: %d\n", my_rank, hostname, has_rows_left);
+            // printf("Rank: %d | Hostname: %s | Rows left: %d\n", my_rank, hostname, has_rows_left);
         }
         MPI_Finalize();
     }
 
-    printf("Rank: %d morreu\n", my_rank);
+    // printf("Rank: %d morreu\n", my_rank);
     return 0;
 }
