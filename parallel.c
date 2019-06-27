@@ -249,13 +249,15 @@ int main(int argc, char** argv) {
                 int i;
                 for(i=1;i<num_proc;i++) {
                     MPI_Recv(&throwaway_buffer, 1, MPI_INT, MPI_ANY_SOURCE, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD, &status);
-                    MPI_Send(0, 1, MPI_INT, status.MPI_SOURCE, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD);
+                    throwaway_buffer = 0;
+                    MPI_Send(&throwaway_buffer, 1, MPI_INT, status.MPI_SOURCE, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD);
                 }
                 should_continue = false;
                 continue;
             } else { 
                 MPI_Recv(&throwaway_buffer, 1, MPI_INT, MPI_ANY_SOURCE, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD, &status);
-                MPI_Send(1, 1, MPI_INT, status.MPI_SOURCE, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD);
+                throwaway_buffer = 1;
+                MPI_Send(&throwaway_buffer, 1, MPI_INT, status.MPI_SOURCE, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD);
                 int num_rows;
                 MPI_Recv(&num_rows, 1, MPI_INT, MPI_ANY_SOURCE, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, &status);
 
