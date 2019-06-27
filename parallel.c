@@ -297,9 +297,17 @@ int main(int argc, char** argv) {
             // printMatrix(SIZE, matrixRes);
             
             rows_remaining -= num_rows;
-            offset += num_rows;
-            MPI_Send(&rows_remaining, 1, MPI_INT, status.MPI_SOURCE, HAS_ROWS_LEFT_TAG, MPI_COMM_WORLD);
+            if(rows_remaining == 0) {
+                int i;
+                for(i=1;i<num_proc;i++) {
+                    MPI_Send(&rows_remaining, 1, MPI_INT, i, HAS_ROWS_LEFT_TAG, MPI_COMM_WORLD);
+                }
+            } else {
+                offset += num_rows;
+                MPI_Send(&rows_remaining, 1, MPI_INT, status.MPI_SOURCE, HAS_ROWS_LEFT_TAG, MPI_COMM_WORLD);
+            }
         }
+        
         if(!verifyResult()) {
             printf("Deu bom\n");
         } else {
@@ -312,6 +320,7 @@ int main(int argc, char** argv) {
         // printMatrix(SIZE, matrixRes);
         // printf("\n");
         // Stops execution timer
+
         execution_elapsed_time += MPI_Wtime();
         printf("\n\n*************************************\n");
         printf("Execution total time: %f seconds\n", execution_elapsed_time);
@@ -341,6 +350,7 @@ int main(int argc, char** argv) {
             // printMatrix(num_rows, res);
 
             MPI_Send(&res, num_rows * SIZE, MPI_INT, MASTER_RANK, MATRIX_MULTIPLICATION_RESULT_TAG, MPI_COMM_WORLD);
+            MPI_Probe();
             MPI_Recv(&has_rows_left, 1, MPI_INT, MASTER_RANK, HAS_ROWS_LEFT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             printf("Rank: %d | Hostname: %s | Rows left: %d\n", my_rank, hostname, has_rows_left);
         }
