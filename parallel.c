@@ -300,6 +300,7 @@ int main(int argc, char** argv) {
             if(rows_remaining == 0) {
                 int i;
                 for(i=1;i<num_proc;i++) {
+                    printf("Rows remaining: %d, sending to rank %d", rows_remaining, i);
                     MPI_Send(&rows_remaining, 1, MPI_INT, i, HAS_ROWS_LEFT_TAG, MPI_COMM_WORLD);
                 }
             } else {
@@ -326,13 +327,13 @@ int main(int argc, char** argv) {
         printf("Execution total time: %f seconds\n", execution_elapsed_time);
         printf("*************************************\n\n");
 	
-	printf("Rank %d morreu\n", my_rank);
+	    printf("Rank %d morreu\n", my_rank);
         MPI_Finalize();
     } else {
         int has_rows_left = 1;
         while(has_rows_left) {
-            printf("** Worker %d requesting lines **\n", my_rank);
-            printf("Rank: %d | Hostname: %s | Rows left: %d\n", my_rank, hostname, has_rows_left);
+            // printf("** Worker %d requesting lines **\n", my_rank);
+            // printf("Rank: %d | Hostname: %s | Rows left: %d\n", my_rank, hostname, has_rows_left);
 
             // printf("nmber of lines %d\n", MAX_NUMBER_OF_LINES);
             MPI_Send(&MAX_NUMBER_OF_LINES, 1, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
@@ -356,9 +357,9 @@ int main(int argc, char** argv) {
 
             MPI_Send(&res, num_rows * SIZE, MPI_INT, MASTER_RANK, MATRIX_MULTIPLICATION_RESULT_TAG, MPI_COMM_WORLD);
             MPI_Recv(&has_rows_left, 1, MPI_INT, MASTER_RANK, HAS_ROWS_LEFT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            printf("Rank: %d | Hostname: %s | Rows left: %d\n", my_rank, hostname, has_rows_left);
+            // printf("Rank: %d | Hostname: %s | Rows left: %d\n", my_rank, hostname, has_rows_left);
         }
-	printf("Rank: %d morreu\n", my_rank);
+	    printf("Rank: %d morreu\n", my_rank);
         MPI_Finalize();
     }
 
