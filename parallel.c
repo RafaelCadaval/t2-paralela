@@ -23,6 +23,7 @@ const int NUMBER_OF_ROWS_TAG = 4;
 const int OFFSET_TAG = 5;
 const int MATRIX_MULTIPLICATION_RESULT_TAG = 6;
 const int HAS_ROWS_LEFT_TAG = 7;
+const int CONTINUE_PROCESSING_TAG = 8;
 const int STOP_WORKER_TAG = 10;
 
 // ...
@@ -266,46 +267,42 @@ int main(int argc, char** argv) {
 
         int offset = 0;
         int rows_remaining = SIZE;
-        while(rows_remaining) {
-            // printf("** Master received request..  **\n");
+        bool should_continue = true;
+        while(should_continue) {
             MPI_Status status;
-            int num_rows;
-            MPI_Recv(&num_rows, 1, MPI_INT, MPI_ANY_SOURCE, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, &status);
-            // printf("NUM ROWS: %d\n", num_rows);
-
-            if(rows_remaining < num_rows) {
-                num_rows = rows_remaining;
-            } 
-
-            int test_matrix[num_rows][SIZE];
-            copyMatrix(offset, num_rows, matrixA, test_matrix);
-            // printMatrix(num_rows, test_matrix);
-            // printf("** Master sending matrix portion to Worker %d.. **\n", status.MPI_SOURCE);
+            int throwaway_buffer;
             
-            MPI_Send(&offset, 1, MPI_INT, status.MPI_SOURCE, OFFSET_TAG, MPI_COMM_WORLD);
-            MPI_Send(&num_rows, 1, MPI_INT, status.MPI_SOURCE, NUMBER_OF_ROWS_TAG, MPI_COMM_WORLD);
-            MPI_Send(&test_matrix, num_rows * SIZE, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
-            int matrixResCut[num_rows][SIZE];
-            MPI_Recv(&matrixResCut, num_rows * SIZE, MPI_INT, MPI_ANY_SOURCE, MATRIX_MULTIPLICATION_RESULT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-            // printf("Rows remaining: %d\nOffset: %d", rows_remaining, offset);
-
-            // printf("\n\n--Matrix Cut\n");
-            // printMatrix(num_rows, matrixResCut);
-            insertResMatrix(offset, num_rows, matrixResCut);
-            // printf("\n\n--Matrix Res\n");
-            // printMatrix(SIZE, matrixRes);
-            
-            rows_remaining -= num_rows;
             if(rows_remaining == 0) {
                 int i;
                 for(i=1;i<num_proc;i++) {
-                    printf("Rows remaining: %d, sending to rank %d", rows_remaining, i);
-                    MPI_Send(&rows_remaining, 1, MPI_INT, i, HAS_ROWS_LEFT_TAG, MPI_COMM_WORLD);
+                    MPI_Recv(&throwaway_buffer, 1, MPI_INT, MPI_ANY_SOURCE, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD, &status);
+                    MPI_Send(0, 1, MPI_INT, status.MPI_SOURCE, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD);
                 }
-            } else {
+                should_continue = false;
+                continue;
+            } else { 
+                MPI_Recv(&throwaway_buffer, 1, MPI_INT, MPI_ANY_SOURCE, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD, &status);
+                MPI_Send(1, 1, MPI_INT, status.MPI_SOURCE, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD);
+                int num_rows;
+                MPI_Recv(&num_rows, 1, MPI_INT, MPI_ANY_SOURCE, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD, &status);
+
+                if(rows_remaining < num_rows) {
+                    num_rows = rows_remaining;
+                } 
+
+                int test_matrix[num_rows][SIZE];
+                copyMatrix(offset, num_rows, matrixA, test_matrix);
+                
+                MPI_Send(&offset, 1, MPI_INT, status.MPI_SOURCE, OFFSET_TAG, MPI_COMM_WORLD);
+                MPI_Send(&num_rows, 1, MPI_INT, status.MPI_SOURCE, NUMBER_OF_ROWS_TAG, MPI_COMM_WORLD);
+                MPI_Send(&test_matrix, num_rows * SIZE, MPI_INT, status.MPI_SOURCE, SENDING_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
+                int matrixResCut[num_rows][SIZE];
+                MPI_Recv(&matrixResCut, num_rows * SIZE, MPI_INT, MPI_ANY_SOURCE, MATRIX_MULTIPLICATION_RESULT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+                insertResMatrix(offset, num_rows, matrixResCut);
+            
+                rows_remaining -= num_rows;
                 offset += num_rows;
-                MPI_Send(&rows_remaining, 1, MPI_INT, status.MPI_SOURCE, HAS_ROWS_LEFT_TAG, MPI_COMM_WORLD);
             }
         }
         
@@ -314,14 +311,8 @@ int main(int argc, char** argv) {
         } else {
             printf("Deu ruim\n");
         }
-        // printMatrix(SIZE, matrixA);
-        // printf("\n");
-        // printMatrix(SIZE, matrixB);
-        // printf("\n");
-        // printMatrix(SIZE, matrixRes);
-        // printf("\n");
-        // Stops execution timer
 
+        // Stops execution timer
         execution_elapsed_time += MPI_Wtime();
         printf("\n\n*************************************\n");
         printf("Execution total time: %f seconds\n", execution_elapsed_time);
@@ -332,10 +323,15 @@ int main(int argc, char** argv) {
     } else {
         int has_rows_left = 1;
         while(has_rows_left) {
-            // printf("** Worker %d requesting lines **\n", my_rank);
-            // printf("Rank: %d | Hostname: %s | Rows left: %d\n", my_rank, hostname, has_rows_left);
+            int throwaway_buffer = 0;
+            MPI_Send(&throwaway_buffer, 1, MPI_INT, MASTER_RANK, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD);
+            MPI_Recv(&throwaway_buffer, 1, MPI_INT, MASTER_RANK, CONTINUE_PROCESSING_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            
+            if(!throwaway_buffer) {  
+                has_rows_left = throwaway_buffer;
+                continue; 
+            }
 
-            // printf("nmber of lines %d\n", MAX_NUMBER_OF_LINES);
             MPI_Send(&MAX_NUMBER_OF_LINES, 1, MPI_INT, MASTER_RANK, NEED_LINES_TO_PROCESS_TAG, MPI_COMM_WORLD);
 
             int offset;
@@ -347,17 +343,9 @@ int main(int argc, char** argv) {
 
             int res[num_rows][SIZE];
 
-            // printMatrix(num_rows, recv_matrix);
-            // printf("\n");
-            // printMatrix(SIZE, matrixBAux);
-            // printf("\n");
             multiplyMatrix(num_rows, recv_matrix, matrixBAux, res);
-            // printf("\n");
-            // printMatrix(num_rows, res);
 
             MPI_Send(&res, num_rows * SIZE, MPI_INT, MASTER_RANK, MATRIX_MULTIPLICATION_RESULT_TAG, MPI_COMM_WORLD);
-            MPI_Recv(&has_rows_left, 1, MPI_INT, MASTER_RANK, HAS_ROWS_LEFT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            // printf("Rank: %d | Hostname: %s | Rows left: %d\n", my_rank, hostname, has_rows_left);
         }
 	    printf("Rank: %d morreu\n", my_rank);
         MPI_Finalize();
