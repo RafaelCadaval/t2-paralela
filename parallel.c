@@ -311,6 +311,11 @@ int main(int argc, char** argv) {
         // printf("\n");
         // printMatrix(SIZE, matrixRes);
         // printf("\n");
+        // Stops execution timer
+        execution_elapsed_time += MPI_Wtime();
+        printf("\n\n*************************************\n");
+        printf("Execution total time: %f seconds\n", execution_elapsed_time);
+        printf("*************************************\n\n");
     } else {
         int has_rows_left = 1;
         while(has_rows_left) {
@@ -337,14 +342,9 @@ int main(int argc, char** argv) {
 
             MPI_Send(&res, num_rows * SIZE, MPI_INT, MASTER_RANK, MATRIX_MULTIPLICATION_RESULT_TAG, MPI_COMM_WORLD);
             MPI_Recv(&has_rows_left, 1, MPI_INT, MASTER_RANK, HAS_ROWS_LEFT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            printf("Rank: %d | Hostname: %s | Rows left: %d\n", my_rank, hostname, has_rows_left);
         }
     }
-
-    // Stops execution timer
-    execution_elapsed_time += MPI_Wtime();
-    printf("\n\n*************************************\n");
-    printf("Execution total time: %f seconds\n", execution_elapsed_time);
-    printf("*************************************\n\n");
 
     MPI_Finalize();
     return 0;
