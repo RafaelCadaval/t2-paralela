@@ -1,10 +1,11 @@
 #!/bin/bash
 
-for (( j=100; j<=2000; j+=100 ))
-do
-    for (( c=1; c<=10; c++ ))
-    do
-    mpicc parallel.c -o parallel -DSIZE=$j -std=c99 -fopenmp
-    echo "$j - $c - ${qsub batchjob-2/Batchjob-2-proc}" >> output.txt
+i=100
+while [ "$i" -le 2000 ]; do
+    j=1
+    while [ "$j" -le 10 ]; do
+        echo "$i - $j " && qsub batchjob-2/Batchjob-2-proc >> output.txt 
+        j=$(( j + 1 ))
     done
-done
+    i=$(( i + 100 ))
+done 
