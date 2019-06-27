@@ -356,6 +356,7 @@ int main(int argc, char** argv) {
         }
     }
 
+    printf("Rank: %d morreu\n", my_rank);
     MPI_Finalize();
     return 0;
 }
