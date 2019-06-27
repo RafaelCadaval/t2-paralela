@@ -196,16 +196,6 @@ int main(int argc, char** argv) {
             return result;
         }
 
-        // printf("*** MASTER MATRIXES ***\n");
-        // printf("***    A MATRIX    ***\n");
-        // printMatrix(SIZE, matrixA);
-        // printf("**********************\n");
-        // printf("**********************\n");
-        // printf("***    B MATRIX    ***\n");
-        // printMatrix(SIZE, matrixB);
-        // printf("**********************\n");
-        // printf("**********************\n\n");
-
         // Broadcast matrix B to all workers
         MPI_Bcast(&matrixB, SIZE*SIZE, MPI_INT, MASTER_RANK, MPI_COMM_WORLD);
     } else {
@@ -217,9 +207,6 @@ int main(int argc, char** argv) {
         //  - num_threads = number of the node's processors, if the master isn't running on the same node;
         //      OR
         //  - num_threads = number of the node's processors - 1, if the master is running on the same node.
-        
-        // printf("** Bcast m_hn **\n");
-        // printf("%s\n", master_hostname);
 
         num_threads = omp_get_num_procs();
         if(strcmp(hostname, master_hostname)==0) {
@@ -228,21 +215,7 @@ int main(int argc, char** argv) {
         omp_set_num_threads(num_threads);
         MAX_NUMBER_OF_LINES = num_threads;
 
-        // printf("\nNumber of threads: %d\n", num_threads);
-
         MPI_Bcast(&matrixBAux, SIZE*SIZE, MPI_INT, MASTER_RANK, MPI_COMM_WORLD);
-
-        // printf("** Bcast matrix before pFor **\n");
-        // printMatrix(SIZE, matrixBAux);
-        // printf("**********************\n");
-
-        // int i;
-        // #pragma omp parallel for
-        // for(i=0;i<num_threads;i++) {
-        //     printf("** Worker %d matrix **\n", i);
-        //     // printMatrix(SIZE, matrixBAux);
-        //     // printf("**********************\n", i);
-        // }
     }
 
     // Syncs all process
@@ -306,21 +279,23 @@ int main(int argc, char** argv) {
             }
         }
         
-        if(!verifyResult()) {
-            printf("Deu bom\n");
-        } else {
-            printf("Deu ruim\n");
-        }
+        if(verifyResult()) {
+            // verifyResult will return 0 if the multiplication is correct and 1 if it isn't
+            printf("Matrix multiplication is not correct. Terminating execution.\n");
+            MPI_Finalize();
+            exit(0);
+        } 
 
         // Stops execution timer
         execution_elapsed_time += MPI_Wtime();
         printf("\n\n*************************************\n");
         printf("Execution total time: %f seconds\n", execution_elapsed_time);
         printf("*************************************\n\n");
-	
-	    printf("Rank %d morreu\n", my_rank);
+
         MPI_Finalize();
     } else {
+        // *** Worker process ***
+        
         int has_rows_left = 1;
         while(has_rows_left) {
             int throwaway_buffer = 0;
@@ -347,7 +322,6 @@ int main(int argc, char** argv) {
 
             MPI_Send(&res, num_rows * SIZE, MPI_INT, MASTER_RANK, MATRIX_MULTIPLICATION_RESULT_TAG, MPI_COMM_WORLD);
         }
-	    printf("Rank: %d morreu\n", my_rank);
         MPI_Finalize();
     }
 
